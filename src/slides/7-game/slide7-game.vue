@@ -6,6 +6,9 @@ import GameHeader from '@/slides/7-game/GameHeader.vue'
 import GameWelcome from '@/slides/7-game/GameWelcome.vue'
 import GameWin from '@/slides/7-game/GameWin.vue'
 import GameLoss from '@/slides/7-game/GameLoss.vue'
+import { useSlide } from '@/composables/useSlide.ts'
+
+const { sound } = useSlide()
 
 export type Slide7GameState = {
   welcome: boolean
@@ -29,6 +32,12 @@ const startGame = () => {
   state.game = true
 }
 
+const handleWin = () => {
+  state.game = false
+  state.win = true
+  sound.done.play()
+}
+
 const restartGame = () => {
   state.win = false
   state.loss = false
@@ -43,7 +52,11 @@ onMounted(async () => {
 
 <template>
   <div class="slide">
-    <CardsGame v-model="state" />
+    <CardsGame
+      :is-game-started="state.game"
+      v-model="state"
+      @win="handleWin"
+    />
     <GameWelcome
       :show="state.welcome"
       @startGame="startGame"

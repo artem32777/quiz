@@ -6,11 +6,16 @@ import cardC from './img/C.webp'
 import cardD from './img/D.webp'
 import { useSlide } from '@/composables/useSlide.ts'
 import { useEventListener } from '@vueuse/core'
-import type { Slide7GameState } from '@/slides/7-game/slide7-game.vue'
 
-const state = defineModel<Slide7GameState>({
-  required: true,
-})
+const { isGameStarted } = defineProps<{
+  isGameStarted: boolean
+}>()
+
+const emits = defineEmits<{
+  win: [void]
+}>()
+
+const { sound } = useSlide()
 
 const initialCardsState = [
   { id: 'A', src: cardA },
@@ -27,9 +32,9 @@ const checkIsWinState = () =>
   cards.value.map((c) => c.id).every((id, idx) => id === winCardsState[idx])
 
 watch(
-  () => state.value.game,
-  (game) => {
-    if (!game) {
+  () => isGameStarted,
+  (val) => {
+    if (!val) {
       cards.value = [...initialCardsState]
       draggingIndex.value = null
       dragOverIndex.value = null
@@ -41,8 +46,6 @@ watch(
 const draggingIndex = ref<number | null>(null)
 const dragOverIndex = ref<number | null>(null)
 const ghost = ref<{ src: string; x: number; y: number } | null>(null)
-
-const { sound } = useSlide()
 
 function getPoint(e: MouseEvent | TouchEvent) {
   const touch = 'touches' in e ? e.touches[0] || e.changedTouches[0] : null
@@ -84,9 +87,7 @@ function endDrag() {
   ghost.value = null
 
   if (checkIsWinState()) {
-    sound.done.play()
-    state.value.game = false
-    state.value.win = true
+    emits('win')
   }
 }
 
@@ -109,7 +110,7 @@ useEventListener(document, 'mouseup', handleEnd)
 <template>
   <div
     class="cards-wrapper"
-    :class="{ started: state.game }"
+    :class="{ started: isGameStarted }"
   >
     <div class="row">
       <div
