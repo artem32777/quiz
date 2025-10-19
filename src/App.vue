@@ -7,21 +7,20 @@ import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 </script>
 
 <template>
-  <BackgroundImages />
-  <Info />
-  <Score />
-  <RouterView />
-  <TextWrapper class="prerender-element">1</TextWrapper>
-  <TextWrapper
-    type="legend"
-    class="prerender-element"
-  >
-    2
-  </TextWrapper>
+  <div class="app">
+    <BackgroundImages />
+    <Info />
+    <Score />
+    <RouterView />
+  </div>
+  <div class="prerender">
+    <TextWrapper>1</TextWrapper>
+    <TextWrapper type="legend"> 2 </TextWrapper>
+  </div>
 </template>
 
 <style lang="scss">
-#app {
+.app {
   height: 100vh;
   max-height: 100vh;
   display: flex;
@@ -30,10 +29,11 @@ import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
   overflow: hidden;
 }
 
-.prerender-element {
-  position: absolute;
-  top: -100vh;
+.prerender {
   opacity: 0;
+  top: 0;
+  position: absolute;
+  left: -300%;
   pointer-events: none;
 }
 </style>
