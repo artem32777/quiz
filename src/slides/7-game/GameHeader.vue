@@ -2,13 +2,14 @@
 import BaseButton from '@/components/BaseButton.vue'
 import { onUnmounted, ref, watch } from 'vue'
 import PromptWarning from '@/slides/7-game/PromptWarning.vue'
-import type { Slide7GameState } from '@/slides/7-game/slide7-game.vue'
-import { useSound } from '@vueuse/sound'
-import gameOverSound from '@/assets/sounds/gameOver.mp3'
 
-const state = defineModel<Slide7GameState>({
-  required: true,
-})
+const { isGameStarted } = defineProps<{
+  isGameStarted: boolean
+}>()
+
+const emit = defineEmits<{
+  loss: [void]
+}>()
 
 const TIMER_SECONDS = 60
 const PROMPT_SECONDS = 10
@@ -19,8 +20,6 @@ let timerInterval: number | null = null
 const isPromptBtnVisible = ref(true)
 const isWarningOpen = ref(false)
 const isPromptOpen = ref(false)
-
-const { play: playGameOver } = useSound(gameOverSound, { volume: 0.1 })
 
 const startTimer = () => {
   timer.value = TIMER_SECONDS
@@ -47,9 +46,9 @@ const openPrompt = () => {
 }
 
 watch(
-  () => state.value.game,
-  (game) => {
-    if (game) {
+  () => isGameStarted,
+  (val) => {
+    if (val) {
       isPromptBtnVisible.value = true
       startTimer()
     } else {
@@ -66,9 +65,7 @@ watch(timer, (seconds) => {
   }
 
   if (seconds <= 0) {
-    state.value.game = false
-    state.value.loss = true
-    playGameOver()
+    emit('loss')
   }
 })
 

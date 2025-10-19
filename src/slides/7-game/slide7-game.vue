@@ -38,6 +38,12 @@ const handleWin = () => {
   sound.done.play()
 }
 
+const handleLoss = () => {
+  state.game = false
+  state.loss = true
+  sound.gameOver.play()
+}
+
 const restartGame = () => {
   state.win = false
   state.loss = false
@@ -54,7 +60,6 @@ onMounted(async () => {
   <div class="slide">
     <CardsGame
       :is-game-started="state.game"
-      v-model="state"
       @win="handleWin"
     />
     <GameWelcome
@@ -63,7 +68,8 @@ onMounted(async () => {
     />
     <GameHeader
       v-show="state.header"
-      v-model="state"
+      :is-game-started="state.game"
+      @loss="handleLoss"
     />
     <GameWin
       :show="state.win"
