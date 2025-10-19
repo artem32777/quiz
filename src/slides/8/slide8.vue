@@ -1,40 +1,35 @@
 <script setup lang="ts">
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
-import legend from '@/slides/8/img/legend.webp'
-import textLeft from '@/slides/8/img/text-left.webp'
-import textRight from '@/slides/8/img/text-right.webp'
-import text from '@/slides/8/img/text.webp'
-import btn1 from '@/slides/8/img/btn-1.webp'
-import btn2 from '@/slides/8/img/btn-2.webp'
-import btn3 from '@/slides/8/img/btn-3.webp'
-import Image from '@/components/Image.vue'
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { sleep } from '@/utils/utils.ts'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  legend: false,
+  textLeft: false,
+  textRight: false,
+  text: false,
+  btn: false,
+})
 
 const options: QuizOption[] = [
   {
     id: 'МЕТФОРМИН+ СИТАГЛИПТИН',
     score: 10,
     nextSlide: 7,
-    img: btn1,
   },
   {
     id: 'МЕТФОРМИН + ИНГЛТ-2',
     score: 5,
     nextSlide: 10,
-    img: btn2,
   },
   {
     id: 'СУЛЬФОНИЛ-МОЧЕВИНА',
     score: 0,
     nextSlide: 12,
-    img: btn3,
   },
 ]
 
@@ -66,27 +61,31 @@ onMounted(async () => {
     type="legend"
     height="30"
   >
-    заполненность трюма = результат монотерапии метформином; <br />
+    заполненность трюма = <br />
+    результат монотерапии метформином; <br />
     вода = прогрессирующая дисфункция в-клеток.
   </TextWrapper>
-  <img
-    :src="textLeft"
+  <p
     class="bg-text text-left"
     :class="{ show: state.textLeft }"
-    alt="Описание"
-  />
-  <img
-    :src="textRight"
+  >
+    Монотерапия метформином с трудом удерживает судно на плаву, но в-клетки продолжают погибать. Как
+    спасти команду?!?
+  </p>
+  <p
     class="bg-text text-right"
     :class="{ show: state.textRight }"
-    alt="Описание"
-  />
+  >
+    Комбинация метформина и ситаглиптина «высушила бы трюм» и сбалансировала бы корабль».
+  </p>
 
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
+  <TextWrapper
+    :show="state.text"
+    height="50"
     class="text"
-  />
+  >
+    Мы видим результаты двух тактик лечения. Вам необходимо выбрать: «Что делать дальше?»
+  </TextWrapper>
 
   <div class="buttons">
     <BaseButton
@@ -118,6 +117,12 @@ onMounted(async () => {
   height: 30%;
   opacity: 0;
   transition: all 1s ease 0s;
+  color: white;
+  font-size: 2vw;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.2;
   &.show {
     opacity: 1;
     transform: translate(0px, 0px);
@@ -132,13 +137,14 @@ onMounted(async () => {
 
 .text-right {
   right: 10%;
-  top: 7%;
+  top: 10%;
   transform: translate(0px, -10px);
 }
 
 .text {
-  width: 70%;
-  height: 40%;
+  position: absolute;
+  top: 7%;
+  width: 80%;
 }
 
 .buttons {
@@ -155,6 +161,7 @@ onMounted(async () => {
 }
 
 .slide-confirm-btn {
-  font-size: 5vw;
+  top: 5%;
+  font-size: 3vw;
 }
 </style>

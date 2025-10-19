@@ -6,18 +6,12 @@ import done from '@/assets/sounds/done.mp3'
 import click from '@/assets/sounds/pick2.mp3'
 import unclick from '@/assets/sounds/unclick.mp3'
 
-export type AnimationState = {
-  legend: boolean
-  text: boolean
-  btn: boolean
-}
-
-export const useSlide = <T extends AnimationState = AnimationState>() => {
-  const state = reactive<T>({
+export const useSlide = () => {
+  const state = reactive({
     legend: false,
     text: false,
     btn: false,
-  } as T)
+  })
 
   const sound = {
     hover: useSound(hover, { volume: 0.1 }),

@@ -12,11 +12,11 @@ const { state } = useSlide()
 onMounted(async () => {
   await sleep(1000)
   state.legend = true
-  await sleep(5000)
+  await sleep(3000)
   state.legend = false
   await sleep(1000)
   state.text = true
-  await sleep(5000)
+  await sleep(3000)
   state.text = false
   await sleep(1000)
   state.btn = true
@@ -33,7 +33,10 @@ onMounted(async () => {
     тучи = инсулиноррезистентность <br />
     светящиеся точки = живая масса β-клеток <br />
   </TextWrapper>
-  <TextWrapper :show="state.text">
+  <TextWrapper
+    :show="state.text"
+    height="60"
+  >
     Ваша миссия началась: <br />
     тучи инсулинорезистентности сгущаются над островом Панкреона, и β-клеткам грозит апоптоз. Вам
     нужно восстановить баланс инкретинов и спасти секреторную функцию
