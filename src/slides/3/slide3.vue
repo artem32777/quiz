@@ -11,6 +11,7 @@ import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
 import Slide3Confirm from '@/slides/3/Slide3Confirm.vue'
 import { sleep } from '@/utils/utils.ts'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -57,14 +58,21 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-  />
+  <TextWrapper
+    :show="state.legend"
+    height="30"
+    type="legend"
+  >
+    каждое направление = стратегия лечения <br />
+    значок = тип вмешательства <br />
+    ИОЖ - изменение образа жизни
+  </TextWrapper>
+  <TextWrapper :show="state.text">
+    Перед вами навигационная схема: <br />
+    куда направить «корабль» для максимальной защиты β-клеток? Выберите одно из направлений. При
+    нажатии на значок направления появится его описание и так можно переключаться между ними. Когда
+    определитесь с направлением – нажмите кнопку «выбрать» в нужном Вам направлении.
+  </TextWrapper>
   <div
     v-if="state.btn"
     class="buttons"
@@ -86,6 +94,11 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   button {
     position: absolute;
     width: 22%;

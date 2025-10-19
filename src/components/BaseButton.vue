@@ -32,7 +32,7 @@ const { sound } = useSlide()
   background-color: #ffc102;
   color: #7c3d00;
   border: 0.7vw solid #d86a00;
-  box-shadow: 0 1.5vw 1.5vw rgba(0, 0, 0, 0.3);
+  box-shadow: 0.5vw 0.5vw 0.5vw rgba(0, 0, 0, 0.55);
   border-radius: 3vw;
   font-size: 4vw;
   font-weight: 500;
@@ -43,6 +43,7 @@ const { sound } = useSlide()
   display: flex;
   align-items: center;
   justify-content: center;
+  text-transform: uppercase;
   &.selected {
     filter: brightness(1.2);
   }

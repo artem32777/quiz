@@ -30,8 +30,6 @@ export const useProgressStore = defineStore('progress', () => {
     selectedOption.value = undefined
   }
 
-  // const unselectSound = useSound(soundOff, { volume: 0.25 })
-
   const selectOption = (optionName: string) => {
     if (selectedOption.value === optionName) {
       selectedOption.value = undefined
@@ -43,7 +41,7 @@ export const useProgressStore = defineStore('progress', () => {
   }
 
   const confirmSelection = async () => {
-    const selected = options.value.find((opt) => opt.id === selectedOption.value)
+    const selected = options.value.find((opt: QuizOption) => opt.id === selectedOption.value)
     if (selected) {
       changeProgress(selected.score, selected.nextSlide)
     }
@@ -56,7 +54,7 @@ export const useProgressStore = defineStore('progress', () => {
   }
 
   const finishQuiz = () => {
-    score.value = 0
+    score.value = 50
     sound.done.play()
     void router.push('/')
   }

@@ -1,24 +1,28 @@
-import { globalIgnores } from 'eslint/config'
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import js from '@eslint/js'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
 import pluginVue from 'eslint-plugin-vue'
-import pluginOxlint from 'eslint-plugin-oxlint'
-import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+import { defineConfig } from 'eslint/config'
 
-export default defineConfigWithVueTs(
+export default defineConfig([
   {
-    name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,vue}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+    languageOptions: { globals: globals.browser },
   },
-
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
-
+  tseslint.configs.recommended,
   pluginVue.configs['flat/essential'],
-  vueTsConfigs.recommended,
-  ...pluginOxlint.configs['flat/recommended'],
-  skipFormatting,
+  { files: ['**/*.vue'], languageOptions: { parserOptions: { parser: tseslint.parser } } },
   {
     rules: {
       'vue/multi-word-component-names': 0,
+      'vue/no-v-html': 0,
+      'vue/no-multiple-template-root': 0,
+      '@stylistic/arrow-parens': 0,
+      '@typescript-eslint/ban-ts-comment': 0,
+      '@typescript-eslint/no-namespace': 0,
+      '@typescript-eslint/no-explicit-any': 0,
     },
   },
-)
+])

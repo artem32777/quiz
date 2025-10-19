@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import Image from '@/components/Image.vue'
-import legend from './img/legend.png'
-import text from './img/text.png'
 import { onMounted } from 'vue'
 import { sleep } from '@/utils/utils.ts'
 import { useProgressStore } from '@/stores/progress.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -26,15 +24,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-    class="text"
-  />
+  <TextWrapper
+    :show="state.legend"
+    height="30"
+    type="legend"
+  >
+    парус ИМТ = ожирение <br />
+    парус АД = уровень кровяного давления <br />
+    другие паруса = лабораторные показатели.
+  </TextWrapper>
+  <TextWrapper
+    :show="state.text"
+    height="70"
+  >
+    Корабль — это наш пациент. Паруса говорят о рисках надвигающегося шторма: наличие ожирения,
+    артериальной гипертензии, гипергликемии. Нам с Вами необходимо выбрать кораблю в правильное
+    направление.
+  </TextWrapper>
   <BaseButton
     :show="state.btn"
     @click="progress.changeProgress(0, 3)"
@@ -45,10 +51,6 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-.text {
-  height: 90%;
-}
-
 .slide-btn {
   font-size: 3.3vw;
   position: absolute;

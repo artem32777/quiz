@@ -1,26 +1,23 @@
-import { onMounted, reactive } from 'vue'
+import { reactive } from 'vue'
 import { useSound } from '@vueuse/sound'
 import hover from '@/assets/sounds/hover.mp3'
 import soundOn from '@/assets/sounds/click2.mp3'
-import soundOff from '@/assets/sounds/pop-up-off.mp3'
 import done from '@/assets/sounds/done.mp3'
 import click from '@/assets/sounds/pick2.mp3'
 import unclick from '@/assets/sounds/unclick.mp3'
 
-type AnimationState = Partial<{
+export type AnimationState = {
   legend: boolean
   text: boolean
   btn: boolean
-}> & {
-  [key: string]: boolean
 }
 
-export const useSlide = () => {
-  const state = reactive<AnimationState>({
+export const useSlide = <T extends AnimationState = AnimationState>() => {
+  const state = reactive<T>({
     legend: false,
     text: false,
     btn: false,
-  })
+  } as T)
 
   const sound = {
     hover: useSound(hover, { volume: 0.1 }),

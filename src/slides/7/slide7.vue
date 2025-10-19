@@ -6,6 +6,7 @@ import { sleep } from '@/utils/utils.ts'
 import { useProgressStore } from '@/stores/progress.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -19,11 +20,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
+  <TextWrapper
+    :show="state.text"
+    height="70"
     class="text"
-  />
+  >
+    Отлично! Комбинация метформина и ситаглиптина запускает мощный двигатель, который повышает
+    глюкагоноподобный пептид-1, снижает апоптоз β-клеток и постпрандиальную гликемию. Закрепи успех
+    сыграв в мини-игру
+  </TextWrapper>
   <BaseButton
     @click="progress.changeProgress(0, '7-game')"
     class="btn-confirm"
@@ -36,8 +41,8 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .text {
-  width: 90%;
-  height: 100%;
+  position: absolute;
+  top: 5%;
 }
 
 .btn-confirm {

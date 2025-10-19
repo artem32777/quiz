@@ -6,7 +6,7 @@ import slide4 from '@/slides/4/slide4.vue'
 import slide5 from '@/slides/5/slide5.vue'
 import slide6 from '@/slides/6/slide6.vue'
 import slide7 from '@/slides/7/slide7.vue'
-import slid7Game from '@/slides/7/slide7-game.vue'
+import slide7Game from '@/slides/7-game/slide7-game.vue'
 import slide8 from '@/slides/8/slide8.vue'
 import slide9 from '@/slides/9/slide9.vue'
 import slide10 from '@/slides/10/slide10.vue'
@@ -23,6 +23,7 @@ const router = createRouter({
     { path: '/5', name: '5', component: slide5 },
     { path: '/6', name: '6', component: slide6 },
     { path: '/7', name: '7', component: slide7 },
+    { path: '/7-game', name: '7-game', component: slide7Game },
     { path: '/8', name: '8', component: slide8 },
     { path: '/9', name: '9', component: slide9 },
     { path: '/10', name: '10', component: slide10 },

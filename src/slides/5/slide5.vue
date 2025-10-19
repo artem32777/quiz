@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import legend from './img/legend.png'
-import text from './img/text.png'
-import Image from '@/components/Image.vue'
 import { onMounted } from 'vue'
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { sleep } from '@/utils/utils.ts'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -39,14 +37,22 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-  />
+  <TextWrapper
+    :show="state.legend"
+    height="30"
+    type="legend"
+  >
+    вода = ухудшение контроля; <br />
+    уровень воды = HbA₁c > 8,5 %; <br />
+    насос = прием метформина, снизит уровень HbA₁c. <br />
+    Жемчужины - β-клетки.
+  </TextWrapper>
+  <TextWrapper :show="state.text">
+    Только изменение образа жизни через некоторое время привели к кризису. Гликированный гемоглобин
+    подскочил до 8,5 %. Глюкоза, в нашем случаео ее олицетворяет «вода» в трюме, превышает
+    «допустимые» уровни и скоро все затопит. Нужно срочно менять тактику, чтобы спасти β-клетки.
+    Выберите необходимый насос для откачки «воды».
+  </TextWrapper>
   <div
     v-if="state.btn"
     class="buttons"

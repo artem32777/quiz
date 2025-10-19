@@ -7,6 +7,7 @@ import { onMounted } from 'vue'
 import { sleep } from '@/utils/utils.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -37,10 +38,6 @@ const options: QuizOption[] = [
 onMounted(async () => {
   progress.initializeOptions(options)
   await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
   state.text = true
   await sleep(5000)
   state.text = false
@@ -49,16 +46,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-    class="text"
-  />
-
+  <TextWrapper
+    :show="state.text"
+    height="65"
+  >
+    Монотерапия метформином дала положительный результат, но дисфункция β-клеток прогрессирует!
+    Требуется интенсификация терапии для надежной защиты β-клеток. Выбирайте скорее, коллега!
+  </TextWrapper>
   <div
     v-if="state.btn"
     class="buttons"
@@ -80,11 +74,6 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-.text {
-  width: 90%;
-  height: 90%;
-}
-
 .buttons {
   button {
     position: absolute;

@@ -32,7 +32,7 @@ const progress = useProgressStore()
   opacity: 0;
   pointer-events: none;
   overflow: visible;
-  position: relative;
+  position: absolute;
   &.show {
     opacity: 1;
     pointer-events: auto;

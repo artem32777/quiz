@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import legend from './img/legend.png'
-import text from './img/text.png'
-import Image from '@/components/Image.vue'
+import BaseButton from '../../components/BaseButton.vue'
 import { onMounted } from 'vue'
 import { sleep } from '@/utils/utils.ts'
 import { useProgressStore } from '@/stores/progress.ts'
-import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -26,15 +24,20 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-    class="text"
-  />
+  <TextWrapper
+    :show="state.legend"
+    height="30"
+    type="legend"
+  >
+    Остров = островки лангерганса <br />
+    тучи = инсулиноррезистентность <br />
+    светящиеся точки = живая масса β-клеток <br />
+  </TextWrapper>
+  <TextWrapper :show="state.text">
+    Ваша миссия началась: <br />
+    тучи инсулинорезистентности сгущаются над островом Панкреона, и β-клеткам грозит апоптоз. Вам
+    нужно восстановить баланс инкретинов и спасти секреторную функцию
+  </TextWrapper>
   <BaseButton
     :show="state.btn"
     class="btn-confirm"
@@ -45,11 +48,6 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-.text {
-  width: 100%;
-  height: 70%;
-}
-
 .btn-confirm {
   width: 40%;
 }

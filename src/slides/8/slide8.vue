@@ -12,6 +12,7 @@ import { onMounted } from 'vue'
 import { sleep } from '@/utils/utils.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -60,10 +61,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
+  <TextWrapper
+    :show="state.legend"
+    type="legend"
+    height="30"
+  >
+    заполненность трюма = результат монотерапии метформином; <br />
+    вода = прогрессирующая дисфункция в-клеток.
+  </TextWrapper>
   <img
     :src="textLeft"
     class="bg-text text-left"
