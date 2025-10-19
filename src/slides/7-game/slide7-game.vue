@@ -18,7 +18,7 @@ export type Slide7GameState = {
   loss: boolean
 }
 
-const state = reactive<Slide7GameState>({
+const slideState = reactive<Slide7GameState>({
   welcome: false,
   header: false,
   game: false,
@@ -27,56 +27,56 @@ const state = reactive<Slide7GameState>({
 })
 
 const startGame = () => {
-  state.welcome = false
-  state.header = true
-  state.game = true
+  slideState.welcome = false
+  slideState.header = true
+  slideState.game = true
 }
 
 const handleWin = () => {
-  state.game = false
-  state.win = true
+  slideState.game = false
+  slideState.win = true
   sound.done.play()
 }
 
 const handleLoss = () => {
-  state.game = false
-  state.loss = true
+  slideState.game = false
+  slideState.loss = true
   sound.gameOver.play()
 }
 
 const restartGame = () => {
-  state.win = false
-  state.loss = false
-  state.game = true
+  slideState.win = false
+  slideState.loss = false
+  slideState.game = true
 }
 
 onMounted(async () => {
   await sleep(1000)
-  state.welcome = true
+  slideState.welcome = true
 })
 </script>
 
 <template>
   <div class="slide">
     <CardsGame
-      :is-game-started="state.game"
+      :is-game-started="slideState.game"
       @win="handleWin"
     />
     <GameWelcome
-      :show="state.welcome"
+      :show="slideState.welcome"
       @startGame="startGame"
     />
     <GameHeader
-      v-show="state.header"
-      :is-game-started="state.game"
+      v-show="slideState.header"
+      :is-game-started="slideState.game"
       @loss="handleLoss"
     />
     <GameWin
-      :show="state.win"
+      :show="slideState.win"
       @restartGame="restartGame"
     />
     <GameLoss
-      :show="state.loss"
+      :show="slideState.loss"
       @restartGame="restartGame"
     />
   </div>
