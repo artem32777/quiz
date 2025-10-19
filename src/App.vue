@@ -3,6 +3,7 @@ import '@/assets/style/index.scss'
 import BackgroundImages from '@/components/layout/default/BackgroundImages.vue'
 import Info from '@/components/layout/default/Info.vue'
 import Score from '@/components/layout/default/Score.vue'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 </script>
 
 <template>
@@ -10,6 +11,13 @@ import Score from '@/components/layout/default/Score.vue'
   <Info />
   <Score />
   <RouterView />
+  <TextWrapper class="prerender-element">1</TextWrapper>
+  <TextWrapper
+    type="legend"
+    class="prerender-element"
+  >
+    2
+  </TextWrapper>
 </template>
 
 <style lang="scss">
@@ -20,5 +28,12 @@ import Score from '@/components/layout/default/Score.vue'
   justify-content: center;
   align-items: center;
   overflow: hidden;
+}
+
+.prerender-element {
+  position: absolute;
+  top: -100vh;
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

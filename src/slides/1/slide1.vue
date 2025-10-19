@@ -10,16 +10,16 @@ const progress = useProgressStore()
 const { state } = useSlide()
 
 onMounted(async () => {
-  await sleep(1000)
-  state.legend = true
-  await sleep(3000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  await sleep(3000)
-  state.text = false
-  await sleep(1000)
-  state.btn = true
+  // await sleep(1000)
+  // state.legend = true
+  // await sleep(3000)
+  // state.legend = false
+  // await sleep(1000)
+  // state.text = true
+  // await sleep(3000)
+  // state.text = false
+  // await sleep(1000)
+  // state.btn = true
 })
 </script>
 
