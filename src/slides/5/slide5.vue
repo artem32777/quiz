@@ -39,7 +39,7 @@ onMounted(async () => {
 <template>
   <TextWrapper
     :show="state.legend"
-    height="30"
+    height="40"
     type="legend"
   >
     вода = ухудшение контроля; <br />

@@ -126,7 +126,7 @@ function showPrompt(cardPrompt: string) {
 }
 
 onMounted(async () => {
-  await sleep(1000)
+  // await sleep(1000)
   state.text = true
   await sleep(5000)
   state.text = false

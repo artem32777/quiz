@@ -51,7 +51,7 @@ const restartGame = () => {
 }
 
 onMounted(async () => {
-  await sleep(1000)
+  // await sleep(1000)
   slideState.welcome = true
 })
 </script>
