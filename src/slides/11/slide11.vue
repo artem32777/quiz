@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { useProgressStore } from '@/stores/progress.ts'
-import text from '@/slides/11/img/text.webp'
-import Image from '@/components/Image.vue'
 import { sleep } from '@/utils/utils.ts'
 import { onMounted } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -21,33 +20,46 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-    class="text"
-  />
-
-  <div class="buttons">
-    <BaseButton
-      :show="state.btn"
-      @click="progress.finishQuiz"
+  <div class="slide">
+    <TextWrapper
+      :show="state.text"
+      height="80"
     >
-      ЗАВЕРШИТЬ
-    </BaseButton>
-    <BaseButton
-      :show="state.btn"
-      @click="progress.finishQuiz"
-    >
-      НАЧАТЬ КВЕСТ <br />
-      ЗАНОВО
-    </BaseButton>
+      Поздравляем Вас! Вы успешно привели «корабль» в порт «Успех». Вместе с комбинацией ситаглиптин
+      и метформин достигли у пациента целевых значений гликированного гемоглобина, снизили массу
+      тела с высокой приверженностью к терапии. Вы одержали Победу в битве за β-клетки!»
+    </TextWrapper>
+    <div class="buttons">
+      <BaseButton
+        :show="state.btn"
+        @click="progress.finishQuiz"
+      >
+        ЗАВЕРШИТЬ
+      </BaseButton>
+      <BaseButton
+        :show="state.btn"
+        @click="progress.finishQuiz"
+      >
+        НАЧАТЬ КВЕСТ <br />
+        ЗАНОВО
+      </BaseButton>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .buttons {
   position: absolute;
-  width: 80%;
+  width: 100%;
   top: 35%;
 
   button {

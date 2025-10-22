@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
-import { computed, reactive, ref, type Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useSlide } from '@/composables/useSlide.ts'
 
 export interface QuizOption {
@@ -15,8 +14,7 @@ export const useProgressStore = defineStore('progress', () => {
   const router = useRouter()
   const { sound } = useSlide()
 
-  // const slide = useStorage('current-slide', 3)
-  const score = useStorage('quiz-points', 50)
+  const score = ref(50)
 
   const options = ref<QuizOption[]>([])
   const selectedOption = ref<QuizOption['id']>()

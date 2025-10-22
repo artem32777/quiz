@@ -1,145 +1,129 @@
 <script setup lang="ts">
-import { ref, type ComponentPublicInstance, onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import Card from '@/components/Card.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import areaHeart from './img/area/heart.webp'
 import areaCarbon from './img/area/carbon.webp'
 import areaKidneys from './img/area/kidneys.webp'
 import areaWeight from './img/area/weight.webp'
-import { useSlide } from '@/composables/useSlide.ts'
-import { sleep } from '@/utils/utils.ts'
+import { type Slide9Card, slide9Cards } from '@/slides/9/cardsData.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useProgressStore } from '@/stores/progress.ts'
+import { vOnClickOutside } from '@vueuse/components'
+import { sleep } from '@/utils/utils.ts'
+import { useSlide } from '@/composables/useSlide.ts'
 
+const progress = useProgressStore()
 const { sound } = useSlide()
 
 const state = reactive({
   text: false,
   game: false,
+  gameEndText: false,
+  results: false,
 })
 
-const areas = [
+export type AreaId = 'carbon' | 'weight' | 'kidneys' | 'heart'
+
+type Area = {
+  id: AreaId
+  img: string
+  isHovered?: boolean
+}
+
+const areas: Area[] = [
   { id: 'carbon', img: areaCarbon },
   { id: 'weight', img: areaWeight },
   { id: 'kidneys', img: areaKidneys },
   { id: 'heart', img: areaHeart },
-] as const satisfies { id: string; img: string }[]
-
-type AreaId = (typeof areas)[number]['id']
-
-const cards: { id: string; area: AreaId }[] = [
-  { id: '1', area: 'carbon' },
-  { id: '2', area: 'carbon' },
-  { id: '3', area: 'weight' },
-  { id: '4', area: 'kidneys' },
-  { id: '5', area: 'heart' },
-  { id: '6', area: 'heart' },
-  { id: '7', area: 'weight' },
-  { id: '8', area: 'weight' },
-  { id: '9', area: 'kidneys' },
-  { id: '10', area: 'kidneys' },
-  { id: '11', area: 'heart' },
-  { id: '12', area: 'heart' },
-  { id: '13', area: 'weight' },
-  { id: '14', area: 'weight' },
-  { id: '15', area: 'kidneys' },
-  { id: '16', area: 'kidneys' },
-  { id: '17', area: 'heart' },
 ]
 
-const draggedCardId = ref<string | null>(null)
-const cardPositions = ref<Record<string, AreaId | null>>(
-  Object.fromEntries(cards.map((card) => [card.id, null])),
-)
-const isChecked = ref(false)
-const errorCards = ref<Set<string>>(new Set())
-const hoveredArea = ref<AreaId | null>(null)
-const draggedCardPosition = ref<{ x: number; y: number } | null>(null)
-const areaElements = ref<Map<AreaId, HTMLElement>>(new Map())
+const cards = ref<Slide9Card[]>([...slide9Cards])
+const prompt = ref<string | null>(null)
 
-const resetDragState = () => {
-  draggedCardId.value = null
-  hoveredArea.value = null
-  draggedCardPosition.value = null
+type DragState = {
+  activeId: string | null
+  offsetX: number
+  offsetY: number
+  x: number
+  y: number
+  overArea: AreaId | null
 }
 
-const placeDraggedTo = (areaId: AreaId) => {
-  if (!draggedCardId.value) return
-  cardPositions.value[draggedCardId.value] = areaId
-  resetDragState()
+const drag = reactive<DragState>({
+  activeId: null,
+  offsetX: 0,
+  offsetY: 0,
+  x: 0,
+  y: 0,
+  overArea: null,
+})
+
+function getAreaAtPoint(x: number, y: number): AreaId | null {
+  const el = document.elementFromPoint(x, y) as HTMLElement | null
+  const areaEl = el?.closest('.area') as HTMLElement | null
+  if (!areaEl) return null
+  const id = areaEl.dataset.id as AreaId | undefined
+  return id ?? null
 }
 
-const updateHoveredAreaFromPoint = (x: number, y: number) => {
-  const element = document.elementFromPoint(x, y)
-  hoveredArea.value = element
-    ? (Array.from(areaElements.value.entries()).find(([, areaEl]) =>
-        areaEl.contains(element),
-      )?.[0] ?? null)
-    : null
+function setCardArea(cardId: string, areaId: AreaId | null) {
+  const card = cards.value.find((c) => c.id === cardId)
+  if (card) card.placedArea = areaId
 }
 
-const startDrag = (cardId: string) => {
-  draggedCardId.value = cardId
-  isChecked.value = false
-  errorCards.value.delete(cardId)
+const onPointerDown = (cardId: string, e: PointerEvent) => {
+  if (!state.game) return
+  const target = e.currentTarget as HTMLElement
+  target.setPointerCapture?.(e.pointerId)
+  const rect = target.getBoundingClientRect()
+  drag.activeId = cardId
+  drag.offsetX = e.clientX - rect.left
+  drag.offsetY = e.clientY - rect.top
+  drag.x = e.clientX
+  drag.y = e.clientY
+  drag.overArea = null
+  sound.select.play()
 }
 
-// HTML5 DnD
-const handleDragStart = startDrag
-const handleDragEnd = resetDragState
-const handleDragOver = (event: DragEvent, areaId: AreaId) => {
-  event.preventDefault()
-  hoveredArea.value = areaId
-}
-const handleDragLeave = () => (hoveredArea.value = null)
-const handleDrop = placeDraggedTo
-
-// Touch
-const handleTouchStart = (event: TouchEvent, cardId: string) => {
-  const t = event.touches[0]
-  if (!t) return
-  startDrag(cardId)
-  draggedCardPosition.value = { x: t.clientX, y: t.clientY }
+const onPointerMove = (e: PointerEvent) => {
+  if (!drag.activeId) return
+  drag.x = e.clientX
+  drag.y = e.clientY
+  const over = getAreaAtPoint(e.clientX, e.clientY)
+  drag.overArea = over
+  areas.forEach((a) => {
+    a.isHovered = a.id === over
+  })
 }
 
-const handleTouchMove = (event: TouchEvent) => {
-  if (!draggedCardId.value) return
-  event.preventDefault()
-  const t = event.touches[0]
-  if (!t) return
-  draggedCardPosition.value = { x: t.clientX, y: t.clientY }
-  updateHoveredAreaFromPoint(t.clientX, t.clientY)
+const onPointerUp = (e: PointerEvent) => {
+  if (!drag.activeId) return
+  const over = getAreaAtPoint(e.clientX, e.clientY)
+  setCardArea(drag.activeId, over)
+  areas.forEach((a) => (a.isHovered = false))
+  drag.activeId = null
+  drag.overArea = null
+  sound.hover.play()
 }
 
-const handleTouchEnd = (event: TouchEvent) => {
-  if (!draggedCardId.value) return
-  const t = event.changedTouches[0]
-  if (t) {
-    updateHoveredAreaFromPoint(t.clientX, t.clientY)
-    if (hoveredArea.value) placeDraggedTo(hoveredArea.value)
-  }
-  resetDragState()
+async function checkResults() {
+  cards.value.forEach((card) => {
+    card.error = (card.placedArea ?? null) !== card.area
+    card.placedArea = null
+  })
+  sound.done.play()
+  state.game = false
+  state.gameEndText = true
+  await sleep(3000)
+  state.gameEndText = false
+  state.results = true
 }
 
-const setAreaRef = (el: Element | ComponentPublicInstance | null, areaId: AreaId) => {
-  if (!el) return
-  const htmlEl = '$el' in el && el.$el instanceof HTMLElement ? el.$el : el
-  if (htmlEl instanceof HTMLElement) areaElements.value.set(areaId, htmlEl)
+function showPrompt(cardPrompt: string) {
+  if (!state.results) return
+  prompt.value = cardPrompt
 }
-
-const checkResult = () => {
-  isChecked.value = true
-  errorCards.value = new Set(
-    cards.filter((card) => cardPositions.value[card.id] !== card.area).map((card) => card.id),
-  )
-}
-
-const getCardVariant = (cardId: string) =>
-  isChecked.value && errorCards.value.has(cardId) ? 'error' : 'default'
-
-const isCardPlaced = (cardId: string) => cardPositions.value[cardId] !== null
-const shouldBeTransparent = (cardId: string) => isCardPlaced(cardId) && !isChecked.value
-const isBeingDragged = (cardId: string) =>
-  draggedCardId.value === cardId && draggedCardPosition.value !== null
 
 onMounted(async () => {
   await sleep(1000)
@@ -152,49 +136,45 @@ onMounted(async () => {
 
 <template>
   <div class="slide">
+    <TextWrapper
+      height="70"
+      class="text"
+      :show="state.text"
+    >
+      Цель игры правильно распределить перетаскиванием карточки с утверждениями из левой колонки по
+      4 системам организма в правой колонке. После распределения всех карточек для завершения игры
+      необходимо нажать кнопку – «Проверить результат».
+    </TextWrapper>
+
     <div class="cards">
-      <Card
+      <div
         v-for="card in cards"
         :key="card.id"
-        :variant="getCardVariant(card.id)"
-        class="card"
+        @click="showPrompt(card.prompt)"
+        class="card-wrapper"
         :class="{
-          'card-placed': shouldBeTransparent(card.id),
-          'card-dragging': isBeingDragged(card.id),
+          placed: !!card.placedArea,
+          dragging: drag.activeId === card.id,
+          clickable: state.results,
+          disabled: !state.game && !state.results,
         }"
-        draggable="true"
-        @dragstart="handleDragStart(card.id)"
-        @dragend="handleDragEnd"
-        @touchstart.passive="handleTouchStart($event, card.id)"
-        @touchmove="handleTouchMove"
-        @touchend="handleTouchEnd"
+        @pointerdown.stop.prevent="onPointerDown(card.id, $event)"
+        @pointermove.stop.prevent="onPointerMove"
+        @pointerup.stop.prevent="onPointerUp"
       >
-        {{ card.id }}
-      </Card>
-    </div>
-
-    <Teleport to="body">
-      <div
-        v-if="draggedCardId && draggedCardPosition"
-        class="dragged-card-clone"
-        :style="{ left: `${draggedCardPosition.x}px`, top: `${draggedCardPosition.y}px` }"
-      >
-        <Card :variant="getCardVariant(draggedCardId)">
-          {{ draggedCardId }}
+        <Card :error="card.error">
+          {{ card.id }}
         </Card>
       </div>
-    </Teleport>
+    </div>
 
     <div class="areas">
       <div
         v-for="area in areas"
         :key="area.id"
-        :ref="(el) => setAreaRef(el, area.id)"
         class="area"
-        :class="{ 'area-hovered': hoveredArea === area.id }"
-        @dragover="handleDragOver($event, area.id)"
-        @dragleave="handleDragLeave"
-        @drop="handleDrop(area.id)"
+        :data-id="area.id"
+        :class="{ hovered: area.isHovered }"
       >
         <img
           :src="area.img"
@@ -203,13 +183,61 @@ onMounted(async () => {
       </div>
     </div>
 
-    <BaseButton
-      class="check-result"
-      @click="checkResult"
+    <div
+      v-if="drag.activeId"
+      class="ghost"
+      :style="{
+        left: drag.x - drag.offsetX + 'px',
+        top: drag.y - drag.offsetY + 'px',
+      }"
     >
-      Проверить <br />
-      результат
+      <Card :error="false">
+        {{ drag.activeId }}
+      </Card>
+    </div>
+
+    <BaseButton
+      v-if="state.game"
+      class="check-result"
+      @click="checkResults"
+    >
+      Проверить результат
     </BaseButton>
+
+    <BaseButton
+      v-if="state.results"
+      class="check-result"
+      @click="progress.changeProgress(0, 11)"
+    >
+      Далее
+    </BaseButton>
+
+    <TextWrapper
+      height="50"
+      class="text text-prompt"
+      :show="state.gameEndText"
+    >
+      Для получения подсказки нажмите поочередно на карточки, окрашенные красным
+    </TextWrapper>
+
+    <Transition
+      name="scale"
+      :duration="{
+        enter: 1000,
+        leave: 0,
+      }"
+    >
+      <TextWrapper
+        v-if="prompt"
+        v-on-click-outside="() => (prompt = null)"
+        type="prompt"
+        class="prompt"
+      >
+        <div class="prompt-inner">
+          {{ prompt }}
+        </div>
+      </TextWrapper>
+    </Transition>
   </div>
 </template>
 
@@ -222,6 +250,18 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   z-index: 250;
+  user-select: none;
+  touch-action: none;
+}
+
+.text {
+  position: absolute;
+  z-index: 300;
+  top: 10%;
+}
+
+.text-prompt {
+  top: 20%;
 }
 
 .cards {
@@ -233,29 +273,26 @@ onMounted(async () => {
   align-items: center;
 }
 
-.card {
+.card-wrapper {
   cursor: grab;
-  touch-action: none;
-  user-select: none;
-  transition: opacity 0.2s ease;
-}
-
-.card-placed {
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-.card-dragging {
-  opacity: 0.3;
-}
-
-.dragged-card-clone {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  opacity: 0.9;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  @media (any-hover: hover) {
+    &:hover {
+      filter: brightness(1.1);
+    }
+  }
+  &.dragging {
+    opacity: 0.2;
+  }
+  &.placed {
+    opacity: 0;
+    pointer-events: none;
+  }
+  &.clickable {
+    cursor: pointer;
+  }
+  &.disabled {
+    pointer-events: none;
+  }
 }
 
 .areas {
@@ -269,13 +306,18 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  img {
+    -webkit-user-drag: none;
+  }
 }
 
 .area {
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
   width: 75%;
-  &.area-hovered {
-    transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  &.hovered {
+    filter: brightness(1.2);
+    transform: scale(1.05);
   }
 }
 
@@ -288,5 +330,26 @@ onMounted(async () => {
   border-width: 0.2vw;
   border-radius: 1vw;
   padding: 1.5vw;
+  max-width: 10vw;
+}
+
+.ghost {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  transform: translate(0, 0);
+  width: 10vw;
+}
+
+.prompt {
+  position: absolute;
+  width: 60%;
+  top: 10%;
+  max-height: 80%;
+  z-index: 300;
+}
+
+.prompt-inner {
+  font-size: 1.7vw;
 }
 </style>

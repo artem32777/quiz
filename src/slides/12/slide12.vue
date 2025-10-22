@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
-import text from '@/slides/11/img/text.webp'
-import Image from '@/components/Image.vue'
 import { sleep } from '@/utils/utils.ts'
 import { onMounted } from 'vue'
-import legend from '@/slides/5/img/legend.png'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -40,17 +38,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
-
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-    class="text"
-  />
-
+  <TextWrapper
+    :show="state.legend"
+    type="legend"
+    height="60"
+  >
+    единичные светящиеся β клетки = истощение клеток от избыточной стимуляции ПСМ; <br />
+    тощая команда = последствия гипогликемии, уровень глюкозы плазмы 2.9 ммоль/л; <br />
+    аптечка = экстренная инъекция глюкозы.
+  </TextWrapper>
+  <TextWrapper
+    :show="state.text"
+    height="70"
+  >
+    Терапия препаратами сульфонилмочевины часто приводит к кризису: возникновение гипогликемических
+    состояний, включая тяжёлые – уровень глюкозы плазмы менее 3,0 ммоль/л. Срочно меняем курс, чтобы
+    спасти β клетки!
+  </TextWrapper>
   <div class="buttons">
     <BaseButton
       v-for="option in options"
@@ -76,22 +80,19 @@ onMounted(async () => {
 .buttons {
   position: absolute;
   width: 80%;
-  top: 43%;
+  height: 30%;
+  top: 41%;
+  display: flex;
+  justify-content: space-between;
   button {
     font-size: 2vw;
     width: 25vw;
     height: 8vw;
-    position: absolute;
     border-radius: 2vw;
-    &:nth-child(1) {
-    }
-    &:nth-child(2) {
-      right: 8%;
-    }
   }
 }
 
 .slide-confirm-btn {
-  transform: translate(-12%, 6%) scale(0.7);
+  transform: scale(0.7);
 }
 </style>

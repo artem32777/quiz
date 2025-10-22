@@ -15,7 +15,8 @@ import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
   </div>
   <div class="prerender">
     <TextWrapper>1</TextWrapper>
-    <TextWrapper type="legend"> 2 </TextWrapper>
+    <TextWrapper type="legend">2</TextWrapper>
+    <TextWrapper type="prompt">3</TextWrapper>
   </div>
 </template>
 

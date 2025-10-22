@@ -1,15 +1,15 @@
 <script setup lang="ts">
-const { variant = 'default' } = defineProps<{
-  variant?: 'default' | 'error'
-}>()
+defineProps<{ error?: boolean }>()
 </script>
 
 <template>
   <div
     class="card"
-    :class="`card-${variant}`"
+    :class="{
+      error: error,
+    }"
   >
-    <div class="card-inner">
+    <div class="inner">
       <slot />
     </div>
   </div>
@@ -21,12 +21,16 @@ const { variant = 'default' } = defineProps<{
   height: 10vw;
   padding: 0.5vw;
   background-color: #00b39d;
-  &.card-error {
+  &.error {
     background-color: #ffb39d;
+    .inner {
+      background-color: #ffd9d6;
+      color: #ff0101;
+    }
   }
 }
 
-.card-inner {
+.inner {
   border-radius: 1vw;
   width: 100%;
   height: 100%;
@@ -35,12 +39,11 @@ const { variant = 'default' } = defineProps<{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2vw;
+  font-size: 1vw;
+  text-align: center;
+  text-wrap: wrap;
+  word-break: break-word;
   text-transform: uppercase;
   font-weight: 500;
-  .card-error & {
-    background-color: #ffd9d6;
-    color: #ff0101;
-  }
 }
 </style>

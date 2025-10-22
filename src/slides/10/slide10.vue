@@ -7,6 +7,7 @@ import { onMounted } from 'vue'
 import { sleep } from '@/utils/utils.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 
 const progress = useProgressStore()
 const { state } = useSlide()
@@ -37,15 +38,21 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Image
-    :img-src="legend"
-    :is-visible="state.legend"
-  />
+  <TextWrapper
+    :show="state.legend"
+    type="legend"
+    height="30"
+  >
+    туман = урогенитальные инфекции; <br />
+    стрелки = варианты управления терапией
+  </TextWrapper>
 
-  <Image
-    :img-src="text"
-    :is-visible="state.text"
-  />
+  <TextWrapper
+    :show="state.text"
+    height="40"
+  >
+    При добавлении иНГЛТ-2 появляется риск урогенитальных инфекций. Изменить или сохранить курс?
+  </TextWrapper>
 
   <div
     v-if="state.btn"
@@ -117,9 +124,12 @@ onMounted(async () => {
 }
 
 .slide-confirm-btn {
+  position: absolute;
   padding: 2vw;
-  left: -2%;
+  border-radius: 1vw;
+  border-width: 0.4vw;
   font-size: 2vw;
-  bottom: -25%;
+  bottom: 16%;
+  right: 45%;
 }
 </style>

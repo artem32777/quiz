@@ -16,7 +16,6 @@ const { sound } = useSlide()
   >
     <button
       v-if="show"
-      @mouseenter="sound.hover.play()"
       class="button"
       :class="{
         selected: selected,

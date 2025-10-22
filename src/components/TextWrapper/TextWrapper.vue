@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import textImg from './roll.webp'
 import legendImg from './legend.webp'
+import promptImg from './prompt.webp'
 import { computed } from 'vue'
 
 const {
@@ -11,31 +12,36 @@ const {
 } = defineProps<{
   show?: boolean
   height?: number | string
-  type?: 'roll' | 'legend'
+  type?: 'roll' | 'legend' | 'prompt'
   img?: string
 }>()
 
-const bgImage = computed(() => {
-  if (img) return img
-  if (type === 'legend') {
-    return legendImg
-  } else {
-    return textImg
-  }
-})
-
 const innerStyles = computed(() => {
-  if (type === 'legend') {
-    return {
-      color: '#000',
-      inset: '0',
-    }
-  } else {
-    return {
-      color: '#805308',
-      inset: '15%',
-    }
+  const styleMap = {
+    roll: {
+      bg: textImg,
+      style: {
+        color: '#805308',
+        inset: '15%',
+      },
+    },
+    legend: {
+      bg: legendImg,
+      style: {
+        color: '#000',
+        inset: '0',
+      },
+    },
+    prompt: {
+      bg: promptImg,
+      style: {
+        color: '#000',
+        inset: '0',
+      },
+    },
   }
+
+  return styleMap[type]
 })
 </script>
 
@@ -53,7 +59,7 @@ const innerStyles = computed(() => {
         <slot />
       </div>
       <img
-        :src="bgImage"
+        :src="img || innerStyles.bg"
         class="img"
         alt="Описание"
       />

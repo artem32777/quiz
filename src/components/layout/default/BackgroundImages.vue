@@ -29,7 +29,7 @@ const bgImages: { slide: string; src: string }[] = [
 
 const route = useRoute()
 
-const slidesWithoutScoreAndInfo = ['7-game', '9']
+const slidesWithoutScoreAndInfo = ['7-game', '9', '11']
 
 const zIndex = computed(() => {
   if (!route.name) return undefined
