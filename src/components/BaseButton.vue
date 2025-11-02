@@ -38,7 +38,7 @@ const { sound } = useSlide()
   padding: 2.5vw;
   position: relative;
   z-index: 30;
-  transition: all 0.5s ease 0s;
+  transition: filter 0.5s ease 0s;
   display: flex;
   align-items: center;
   justify-content: center;

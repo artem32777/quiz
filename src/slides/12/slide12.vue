@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
-import { sleep } from '@/utils/utils.ts'
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  legend: false,
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
 
 const options: QuizOption[] = [
   {
@@ -22,24 +28,16 @@ const options: QuizOption[] = [
   },
 ]
 
-onMounted(async () => {
+onMounted(() => {
   progress.initializeOptions(options)
-  await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  await sleep(1000)
-  state.btn = true
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     type="legend"
     height="60"
   >
@@ -49,13 +47,17 @@ onMounted(async () => {
   </TextWrapper>
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="70"
   >
     Терапия препаратами сульфонилмочевины часто приводит к кризису: возникновение гипогликемических
     состояний, включая тяжёлые – уровень глюкозы плазмы менее 3,0 ммоль/л. Срочно меняем курс, чтобы
     спасти β клетки!
   </TextWrapper>
-  <div class="buttons">
+  <div
+    class="buttons"
+    v-show="state.btn"
+  >
     <BaseButton
       v-for="option in options"
       :key="option.id"

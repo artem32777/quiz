@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
 import BaseButton from '@/components/BaseButton.vue'
-import { sleep } from '@/utils/utils.ts'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  legend: false,
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
 
 const options: QuizOption[] = [
   {
@@ -22,23 +28,16 @@ const options: QuizOption[] = [
   },
 ]
 
-onMounted(async () => {
+onMounted(() => {
   progress.initializeOptions(options)
-  await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  state.btn = true
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     height="40"
     type="legend"
   >
@@ -47,7 +46,10 @@ onMounted(async () => {
     насос = прием метформина, снизит уровень HbA₁c. <br />
     Жемчужины - β-клетки.
   </TextWrapper>
-  <TextWrapper :show="state.text">
+  <TextWrapper
+    :show="state.text"
+    @click="nextStep"
+  >
     Только изменение образа жизни через некоторое время привели к кризису. Гликированный гемоглобин
     подскочил до 8,5 %. Глюкоза, в нашем случаео ее олицетворяет «вода» в трюме, превышает
     «допустимые» уровни и скоро все затопит. Нужно срочно менять тактику, чтобы спасти β-клетки.

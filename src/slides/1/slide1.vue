@@ -1,31 +1,31 @@
 <script setup lang="ts">
 import BaseButton from '../../components/BaseButton.vue'
-import { onMounted } from 'vue'
-import { sleep } from '@/utils/utils.ts'
+import { onMounted, reactive } from 'vue'
 import { useProgressStore } from '@/stores/progress.ts'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
+import { sleep } from '@/utils/utils.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  legend: false,
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
 
 onMounted(async () => {
   await sleep(1000)
-  state.legend = true
-  await sleep(3000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  await sleep(3000)
-  state.text = false
-  await sleep(1000)
-  state.btn = true
+  void nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     height="30"
     type="legend"
   >
@@ -35,6 +35,7 @@ onMounted(async () => {
   </TextWrapper>
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="60"
   >
     Ваша миссия началась: <br />
@@ -53,5 +54,13 @@ onMounted(async () => {
 <style scoped lang="scss">
 .btn-confirm {
   width: 40%;
+}
+
+.test {
+  font-size: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #fff;
 }
 </style>

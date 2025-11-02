@@ -1,31 +1,29 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { sleep } from '@/utils/utils.ts'
+import { onMounted, reactive } from 'vue'
 import { useProgressStore } from '@/stores/progress.ts'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
 
-onMounted(async () => {
-  await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  await sleep(1000)
-  state.btn = true
+const state = reactive({
+  legend: false,
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
+
+onMounted(() => {
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     height="30"
     type="legend"
   >
@@ -35,6 +33,7 @@ onMounted(async () => {
   </TextWrapper>
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="70"
   >
     Корабль — это наш пациент. Паруса говорят о рисках надвигающегося шторма: наличие ожирения,

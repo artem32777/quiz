@@ -67,6 +67,7 @@ const progress = useProgressStore()
   width: 95%;
   z-index: 1;
   top: 20%;
+  pointer-events: none;
 }
 
 .buttons {

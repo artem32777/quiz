@@ -1,21 +1,32 @@
 <script setup lang="ts">
 import { useProgressStore } from '@/stores/progress.ts'
-import { sleep } from '@/utils/utils.ts'
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
 
-onMounted(async () => {
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  await sleep(1000)
-  state.btn = true
+const state = reactive({
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
+
+const gameRank = () => {
+  const { score } = progress
+  return score >= 90
+    ? 'Хранитель β-клеток'
+    : score >= 70
+      ? 'Страж инкретинов'
+      : score >= 50
+        ? 'Защитник метаболизма'
+        : 'Исследователь в поисках'
+}
+
+onMounted(() => {
+  nextStep()
 })
 </script>
 
@@ -23,11 +34,14 @@ onMounted(async () => {
   <div class="slide">
     <TextWrapper
       :show="state.text"
-      height="80"
+      @click="nextStep"
+      height="90"
     >
+      Ваш ранг: "{{ gameRank() }}" <br />
       Поздравляем Вас! Вы успешно привели «корабль» в порт «Успех». Вместе с комбинацией ситаглиптин
       и метформин достигли у пациента целевых значений гликированного гемоглобина, снизили массу
-      тела с высокой приверженностью к терапии. Вы одержали Победу в битве за β-клетки!»
+      тела с высокой приверженностью к терапии. Вы одержали Победу <br />
+      в битве за β-клетки!»
     </TextWrapper>
     <div class="buttons">
       <BaseButton

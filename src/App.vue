@@ -14,9 +14,9 @@ import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
     <RouterView />
   </div>
   <div class="prerender">
-    <TextWrapper>1</TextWrapper>
-    <TextWrapper type="legend">2</TextWrapper>
-    <TextWrapper type="prompt">3</TextWrapper>
+    <TextWrapper></TextWrapper>
+    <TextWrapper type="legend"></TextWrapper>
+    <TextWrapper type="prompt"></TextWrapper>
   </div>
 </template>
 
@@ -31,10 +31,11 @@ import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 }
 
 .prerender {
-  opacity: 0;
   top: 0;
   position: absolute;
-  left: -300%;
+  left: -1000%;
   pointer-events: none;
+  height: 100%;
+  overflow: hidden;
 }
 </style>

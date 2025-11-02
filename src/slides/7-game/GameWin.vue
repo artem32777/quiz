@@ -7,10 +7,6 @@ defineProps<{
   show?: boolean
 }>()
 
-const emits = defineEmits<{
-  restartGame: [void]
-}>()
-
 const progress = useProgressStore()
 </script>
 
@@ -38,13 +34,6 @@ const progress = useProgressStore()
         >
           Дальше
         </BaseButton>
-        <BaseButton
-          @click="emits('restartGame')"
-          class="btn"
-        >
-          Пройти игру <br />
-          ещё раз
-        </BaseButton>
       </div>
     </div>
   </Transition>
@@ -65,12 +54,13 @@ const progress = useProgressStore()
   position: absolute;
   width: 95%;
   z-index: 1;
+  pointer-events: none;
 }
 
 .buttons {
   position: absolute;
   z-index: 2;
-  bottom: 7%;
+  bottom: 5%;
   height: 15%;
   width: 100%;
   display: flex;

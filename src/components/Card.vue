@@ -41,8 +41,9 @@ defineProps<{ error?: boolean }>()
   justify-content: center;
   font-size: 1vw;
   text-align: center;
-  text-wrap: wrap;
-  word-break: break-word;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  word-break: normal;
   text-transform: uppercase;
   font-weight: 500;
 }

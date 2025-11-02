@@ -35,6 +35,8 @@ const emits = defineEmits<{
 .text {
   position: absolute;
   top: 14%;
+  cursor: default;
+  pointer-events: none;
 }
 
 .start-btn {

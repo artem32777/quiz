@@ -3,25 +3,24 @@ import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useSlide } from '@/composables/useSlide.ts'
 
-export interface QuizOption {
+export type QuizOption = {
   id: string
   score: number
   nextSlide: number
-  img?: string
+} & {
+  [key: string]: string | number
 }
 
 export const useProgressStore = defineStore('progress', () => {
   const router = useRouter()
   const { sound } = useSlide()
 
-  const score = ref(50)
+  const score = ref(0)
 
   const options = ref<QuizOption[]>([])
   const selectedOption = ref<QuizOption['id']>()
 
-  const getSelected = computed(() => {
-    return options.value.find((opt) => opt.id === selectedOption.value)
-  })
+  const getSelected = computed(() => options.value.find((opt) => opt.id === selectedOption.value))
 
   const initializeOptions = (quizOptions: QuizOption[]) => {
     options.value = quizOptions
@@ -39,9 +38,8 @@ export const useProgressStore = defineStore('progress', () => {
   }
 
   const confirmSelection = async () => {
-    const selected = options.value.find((opt: QuizOption) => opt.id === selectedOption.value)
-    if (selected) {
-      changeProgress(selected.score, selected.nextSlide)
+    if (getSelected.value) {
+      changeProgress(getSelected.value.score, getSelected.value.nextSlide)
     }
   }
 
@@ -52,7 +50,7 @@ export const useProgressStore = defineStore('progress', () => {
   }
 
   const finishQuiz = () => {
-    score.value = 50
+    score.value = 0
     sound.done.play()
     void router.push('/')
   }

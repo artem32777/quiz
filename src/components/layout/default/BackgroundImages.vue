@@ -14,6 +14,7 @@ import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 
 const bgImages: { slide: string; src: string }[] = [
+  { slide: '1', src: slide1Bg },
   { slide: '2', src: slide2Bg },
   { slide: '3', src: slide3Bg },
   { slide: '5', src: slide5Bg },
@@ -40,39 +41,40 @@ const zIndex = computed(() => {
     return -1
   }
 })
+
+// Лениво рендерим заранее все бэкграунды, чтобы не было белого мерцания при смене слайдов:
 </script>
 
 <template>
-  <img
-    :src="slide1Bg"
-    alt="Задний фон"
-    loading="eager"
-    fetchpriority="high"
-    :class="{ show: route.path === '/' }"
-    class="background"
-  />
-  <img
-    v-for="image in bgImages"
-    :key="image.slide"
-    :src="image.src"
-    loading="lazy"
-    fetchpriority="low"
-    alt="Задний фон"
-    :class="{ show: route.name == image.slide }"
-    class="background"
-  />
+  <div class="background-container">
+    <img
+      v-for="image in bgImages"
+      :key="image.slide"
+      :src="image.src"
+      :loading="image.slide === '1' ? 'eager' : 'lazy'"
+      :fetchpriority="image.slide === '1' ? 'high' : 'low'"
+      alt="background"
+      :class="{ show: route.name == image.slide }"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss">
-.background {
+.background-container {
+  z-index: v-bind(zIndex);
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: v-bind(zIndex);
-  opacity: 0;
-  &.show {
-    opacity: 1;
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    &.show {
+      opacity: 1;
+    }
   }
 }
 </style>

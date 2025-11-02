@@ -1,73 +1,64 @@
 <script setup lang="ts">
-import legend from './img/legend.png'
-import text from './img/text.png'
-import zoj from './img/zoj.webp'
-import metformin from './img/metformin.webp'
-import idpp from './img/idpp.webp'
-import psm from './img/psm.webp'
-import Image from '@/components/Image.vue'
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
 import Slide3Confirm from '@/slides/3/Slide3Confirm.vue'
-import { sleep } from '@/utils/utils.ts'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  legend: false,
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
 
 const options: QuizOption[] = [
   {
-    id: 'ZOJ',
-    img: zoj,
+    id: 'Только изменение образа жизни: диета, увеличение физической активности',
     score: 0,
     nextSlide: 5,
   },
   {
-    id: 'Metformin',
-    img: metformin,
+    id: 'начать прием метформина и ситаглиптина + ЗОЖ',
     score: 5,
     nextSlide: 6,
   },
   {
-    id: 'IDPP',
-    img: idpp,
+    id: 'начать прием метформина <br> + ЗОЖ',
     score: 10,
     nextSlide: 7,
   },
   {
-    id: 'PSM',
-    img: psm,
+    id: 'начать прием сульфо-нилмочевины + ЗОЖ',
     score: 5,
     nextSlide: 12,
   },
 ]
 
-onMounted(async () => {
+onMounted(() => {
   progress.initializeOptions(options)
-  await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  state.btn = true
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     height="30"
     type="legend"
   >
     каждое направление = стратегия лечения <br />
     значок = тип вмешательства <br />
-    ИОЖ - изменение образа жизни
+    ЗОЖ - здоровый образ жизни
   </TextWrapper>
-  <TextWrapper :show="state.text">
+  <TextWrapper
+    :show="state.text"
+    @click="nextStep"
+  >
     Перед вами навигационная схема: <br />
     куда направить «корабль» для максимальной защиты β-клеток? Выберите одно из направлений. При
     нажатии на значок направления появится его описание и так можно переключаться между ними. Когда
@@ -86,10 +77,7 @@ onMounted(async () => {
       }"
     />
   </div>
-  <Slide3Confirm
-    @confirm="progress.confirmSelection"
-    class="confirm"
-  />
+  <Slide3Confirm />
 </template>
 
 <style scoped lang="scss">
@@ -114,7 +102,7 @@ onMounted(async () => {
       content: '';
       position: absolute;
       transition: backdrop-filter 0.5s ease 0s;
-      border-radius: 30px;
+      border-radius: 1.5vw;
     }
     &:nth-child(1) {
       top: 4%;
@@ -161,6 +149,11 @@ onMounted(async () => {
         &::before {
           backdrop-filter: brightness(2);
         }
+      }
+    }
+    &:active {
+      &::before {
+        backdrop-filter: brightness(2);
       }
     }
   }

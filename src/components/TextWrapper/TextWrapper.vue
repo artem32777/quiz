@@ -16,32 +16,13 @@ const {
   img?: string
 }>()
 
-const innerStyles = computed(() => {
-  const styleMap = {
-    roll: {
-      bg: textImg,
-      style: {
-        color: '#805308',
-        inset: '15%',
-      },
-    },
-    legend: {
-      bg: legendImg,
-      style: {
-        color: '#000',
-        inset: '0',
-      },
-    },
-    prompt: {
-      bg: promptImg,
-      style: {
-        color: '#000',
-        inset: '0',
-      },
-    },
+const wrapperBgImage = computed(() => {
+  const image = {
+    roll: textImg,
+    legend: legendImg,
+    prompt: promptImg,
   }
-
-  return styleMap[type]
+  return image[type]
 })
 </script>
 
@@ -51,15 +32,13 @@ const innerStyles = computed(() => {
       v-if="show"
       :style="{ height: height + 'vh' }"
       class="wrapper"
+      :class="`wrapper-${type}`"
     >
-      <div
-        :style="innerStyles"
-        class="text-inner"
-      >
+      <div class="text-inner">
         <slot />
       </div>
       <img
-        :src="img || innerStyles.bg"
+        :src="img || wrapperBgImage"
         class="img"
         alt="Описание"
       />
@@ -72,17 +51,33 @@ const innerStyles = computed(() => {
   width: 85%;
   position: relative;
   height: v-bind(height + 'vh');
+  cursor: pointer;
 }
 
 .img {
   height: 100%;
   width: 100%;
   filter: drop-shadow(0.5vw 0.5vw 0.5vw rgba(0, 0, 0, 0.55));
+  transition: all 1s ease 0s;
+  @media (any-hover: hover) {
+    &:hover {
+      transform: scaleX(1.05);
+      filter: drop-shadow(1vw 1vw 1vw rgba(0, 0, 0, 0.7)) brightness(1.1);
+    }
+  }
+  &:active {
+    transform: scaleX(1.05);
+    filter: drop-shadow(1vw 1vw 1vw rgba(0, 0, 0, 0.7)) brightness(1.1);
+  }
+  .wrapper-prompt & {
+    transform: scaleX(1);
+  }
 }
 
 .text-inner {
   position: absolute;
   inset: 15%;
+  max-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,5 +87,14 @@ const innerStyles = computed(() => {
   text-align: center;
   font-weight: 500;
   text-transform: uppercase;
+  pointer-events: none;
+  .wrapper-roll & {
+    color: #805308;
+    inset: 15%;
+  }
+  .wrapper-legend & {
+  }
+  .wrapper-prompt & {
+  }
 }
 </style>

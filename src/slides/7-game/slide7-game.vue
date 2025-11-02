@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
-import { sleep } from '@/utils/utils.ts'
 import CardsGame from '@/slides/7-game/CardsGame.vue'
 import GameHeader from '@/slides/7-game/GameHeader.vue'
 import GameWelcome from '@/slides/7-game/GameWelcome.vue'
@@ -71,10 +70,7 @@ onMounted(async () => {
       :is-game-started="slideState.game"
       @loss="handleLoss"
     />
-    <GameWin
-      :show="slideState.win"
-      @restartGame="restartGame"
-    />
+    <GameWin :show="slideState.win" />
     <GameLoss
       :show="slideState.loss"
       @restartGame="restartGame"

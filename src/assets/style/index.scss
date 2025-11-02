@@ -8,7 +8,7 @@ html {
 }
 
 .scale-enter-active, .scale-leave-active {
-  transition: all 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
 }
 
 .scale-enter-from, .scale-leave-to {

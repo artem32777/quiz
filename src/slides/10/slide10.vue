@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
-import legend from './img/legend.webp'
-import text from './img/text.webp'
-import Image from '@/components/Image.vue'
-import { onMounted } from 'vue'
-import { sleep } from '@/utils/utils.ts'
+import { onMounted, reactive } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  legend: false,
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
 
 const options: QuizOption[] = [
   {
@@ -25,21 +28,16 @@ const options: QuizOption[] = [
   },
 ]
 
-onMounted(async () => {
+onMounted(() => {
   progress.initializeOptions(options)
-  await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
-  state.text = true
-  state.btn = true
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     type="legend"
     height="30"
   >
@@ -49,6 +47,7 @@ onMounted(async () => {
 
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="40"
   >
     При добавлении иНГЛТ-2 появляется риск урогенитальных инфекций. Изменить или сохранить курс?

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
 import { onMounted, reactive } from 'vue'
-import { sleep } from '@/utils/utils.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
 
@@ -14,6 +14,8 @@ const state = reactive({
   text: false,
   btn: false,
 })
+
+const { nextStep } = useSlideSteps(state)
 
 const options: QuizOption[] = [
   {
@@ -27,37 +29,22 @@ const options: QuizOption[] = [
     nextSlide: 10,
   },
   {
-    id: 'СУЛЬФОНИЛ-МОЧЕВИНА',
+    id: 'ПСМ',
     score: 0,
     nextSlide: 12,
   },
 ]
 
-onMounted(async () => {
+onMounted(() => {
   progress.initializeOptions(options)
-  await sleep(1000)
-  state.legend = true
-  await sleep(5000)
-  state.legend = false
-  await sleep(1000)
-  state.textLeft = true
-  await sleep(3000)
-  state.textRight = true
-  await sleep(3000)
-  state.textLeft = false
-  await sleep(1000)
-  state.textRight = false
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  state.btn = true
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.legend"
+    @click="nextStep"
     type="legend"
     height="30"
   >
@@ -66,6 +53,7 @@ onMounted(async () => {
     вода = прогрессирующая дисфункция в-клеток.
   </TextWrapper>
   <p
+    @click="nextStep"
     class="bg-text text-left"
     :class="{ show: state.textLeft }"
   >
@@ -73,6 +61,7 @@ onMounted(async () => {
     спасти команду?!?
   </p>
   <p
+    @click="nextStep"
     class="bg-text text-right"
     :class="{ show: state.textRight }"
   >
@@ -81,6 +70,7 @@ onMounted(async () => {
 
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="50"
     class="text"
   >
@@ -112,7 +102,6 @@ onMounted(async () => {
 <style scoped lang="scss">
 .bg-text {
   position: absolute;
-  pointer-events: none;
   width: 30%;
   height: 30%;
   opacity: 0;
@@ -123,9 +112,21 @@ onMounted(async () => {
   text-transform: uppercase;
   text-align: center;
   line-height: 1.2;
+  cursor: pointer;
   &.show {
     opacity: 1;
     transform: translate(0px, 0px);
+  }
+
+  @media (any-hover: hover) {
+    &:hover {
+      filter: drop-shadow(0.5vw 0.5vw 0.5vw rgba(0, 0, 0, 1));
+      transform: translateY(-5px);
+    }
+  }
+  &:active {
+    filter: drop-shadow(0.5vw 0.5vw 0.5vw rgba(0, 0, 0, 1));
+    transform: translateY(-5px);
   }
 }
 
@@ -150,14 +151,14 @@ onMounted(async () => {
 .buttons {
   position: absolute;
   bottom: 5%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 25vw);
   justify-content: center;
   column-gap: 3vw;
 }
 
 .slide-btn {
   font-size: 2.3vw;
-  max-width: 25%;
 }
 
 .slide-confirm-btn {

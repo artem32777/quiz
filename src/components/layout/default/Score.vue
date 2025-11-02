@@ -11,11 +11,11 @@ const progress = useProgressStore()
 <style scoped lang="scss">
 .score {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 1vw;
+  right: 1vw;
   color: #fff;
   z-index: 150;
-  font-size: 35px;
+  font-size: 2vw;
   font-weight: 500;
 }
 </style>

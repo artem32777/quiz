@@ -10,8 +10,9 @@ import { type Slide9Card, slide9Cards } from '@/slides/9/cardsData.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 import { useProgressStore } from '@/stores/progress.ts'
 import { vOnClickOutside } from '@vueuse/components'
-import { sleep } from '@/utils/utils.ts'
 import { useSlide } from '@/composables/useSlide.ts'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
+import { shuffleArray } from '@/utils/shuffleArray.ts'
 
 const progress = useProgressStore()
 const { sound } = useSlide()
@@ -22,6 +23,8 @@ const state = reactive({
   gameEndText: false,
   results: false,
 })
+
+const { nextStep } = useSlideSteps(state)
 
 export type AreaId = 'carbon' | 'weight' | 'kidneys' | 'heart'
 
@@ -38,7 +41,7 @@ const areas: Area[] = [
   { id: 'heart', img: areaHeart },
 ]
 
-const cards = ref<Slide9Card[]>([...slide9Cards])
+const cards = ref<Slide9Card[]>(shuffleArray(slide9Cards))
 const prompt = ref<string | null>(null)
 
 type DragState = {
@@ -115,8 +118,6 @@ async function checkResults() {
   sound.done.play()
   state.game = false
   state.gameEndText = true
-  await sleep(3000)
-  state.gameEndText = false
   state.results = true
 }
 
@@ -125,21 +126,18 @@ function showPrompt(cardPrompt: string) {
   prompt.value = cardPrompt
 }
 
-onMounted(async () => {
-  // await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  state.game = true
+onMounted(() => {
+  nextStep()
 })
 </script>
 
 <template>
   <div class="slide">
     <TextWrapper
+      :show="state.text"
+      @click="nextStep"
       height="70"
       class="text"
-      :show="state.text"
     >
       Цель игры правильно распределить перетаскиванием карточки с утверждениями из левой колонки по
       4 системам организма в правой колонке. После распределения всех карточек для завершения игры
@@ -156,14 +154,14 @@ onMounted(async () => {
           placed: !!card.placedArea,
           dragging: drag.activeId === card.id,
           clickable: state.results,
-          disabled: !state.game && !state.results,
+          disabled: (!state.game && !state.results) || state.gameEndText,
         }"
         @pointerdown.stop.prevent="onPointerDown(card.id, $event)"
         @pointermove.stop.prevent="onPointerMove"
         @pointerup.stop.prevent="onPointerUp"
       >
         <Card :error="card.error">
-          {{ card.id }}
+          <span v-html="card.id" />
         </Card>
       </div>
     </div>
@@ -191,8 +189,8 @@ onMounted(async () => {
         top: drag.y - drag.offsetY + 'px',
       }"
     >
-      <Card :error="false">
-        {{ drag.activeId }}
+      <Card>
+        <span v-html="drag.activeId" />
       </Card>
     </div>
 
@@ -216,8 +214,13 @@ onMounted(async () => {
       height="50"
       class="text text-prompt"
       :show="state.gameEndText"
+      @click="state.gameEndText = false"
     >
-      Для получения подсказки нажмите поочередно на карточки, окрашенные красным
+      <div>
+        <div v-if="cards.find((el) => el.error)">У Вас есть ошибки!</div>
+        <div v-else>Поздравляем! Вы победили.</div>
+        Для просмотра подсказок нажмите на карточки
+      </div>
     </TextWrapper>
 
     <Transition
@@ -230,6 +233,7 @@ onMounted(async () => {
       <TextWrapper
         v-if="prompt"
         v-on-click-outside="() => (prompt = null)"
+        @click="prompt = null"
         type="prompt"
         class="prompt"
       >

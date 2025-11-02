@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import text from './img/text.png'
-import Image from '@/components/Image.vue'
-import { onMounted } from 'vue'
-import { sleep } from '@/utils/utils.ts'
+import { onMounted, reactive } from 'vue'
 import { useProgressStore } from '@/stores/progress.ts'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+const state = reactive({
+  text: false,
+  btn: false,
+})
+const { nextStep } = useSlideSteps(state)
 
-onMounted(async () => {
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.btn = true
+onMounted(() => {
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="70"
     class="text"
   >

@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { type QuizOption, useProgressStore } from '@/stores/progress.ts'
-import legend from '@/slides/5/img/legend.png'
-import text from '@/slides/5/img/text.png'
-import Image from '@/components/Image.vue'
-import { onMounted } from 'vue'
-import { sleep } from '@/utils/utils.ts'
+import { onMounted, reactive } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
-import { useSlide } from '@/composables/useSlide.ts'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
+import { useSlideSteps } from '@/composables/useSlideSteps.ts'
 
 const progress = useProgressStore()
-const { state } = useSlide()
+
+const state = reactive({
+  text: false,
+  btn: false,
+})
+
+const { nextStep } = useSlideSteps(state)
 
 const options: QuizOption[] = [
   {
@@ -35,19 +37,16 @@ const options: QuizOption[] = [
   },
 ]
 
-onMounted(async () => {
+onMounted(() => {
   progress.initializeOptions(options)
-  await sleep(1000)
-  state.text = true
-  await sleep(5000)
-  state.text = false
-  state.btn = true
+  nextStep()
 })
 </script>
 
 <template>
   <TextWrapper
     :show="state.text"
+    @click="nextStep"
     height="65"
   >
     Монотерапия метформином дала положительный результат, но дисфункция β-клеток прогрессирует!

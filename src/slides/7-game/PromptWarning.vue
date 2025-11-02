@@ -59,6 +59,7 @@ const emits = defineEmits<{
 .text {
   position: absolute;
   width: 80%;
+  pointer-events: none;
 }
 
 .warning-buttons {
