@@ -6,6 +6,7 @@ import GameWelcome from '@/slides/7-game/GameWelcome.vue'
 import GameWin from '@/slides/7-game/GameWin.vue'
 import GameLoss from '@/slides/7-game/GameLoss.vue'
 import { useSlide } from '@/composables/useSlide.ts'
+import { sleep } from '@/utils/utils.ts'
 
 const { sound } = useSlide()
 
@@ -50,7 +51,7 @@ const restartGame = () => {
 }
 
 onMounted(async () => {
-  // await sleep(1000)
+  await sleep(1000)
   slideState.welcome = true
 })
 </script>

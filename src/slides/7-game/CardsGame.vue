@@ -159,6 +159,11 @@ useEventListener(document, 'mouseup', handleEnd)
   display: flex;
   justify-content: center;
   gap: 1vw;
+  opacity: 0;
+  transition: opacity 1s ease 0s;
+  .started & {
+    opacity: 1;
+  }
 }
 
 .slot {

@@ -22,13 +22,16 @@ const emits = defineEmits<{
     Ваша задача — за 60 секунд <br />
     упорядочить ключевые эффекты ситаглиптина. Готовы?
   </TextWrapper>
-  <BaseButton
-    @click="emits('startGame')"
-    class="start-btn"
+  <div
+    class="btn-wrapper"
     :class="{ show }"
   >
-    НАЧАТЬ ИГРУ
-  </BaseButton>
+    <BaseButton
+      @click="emits('startGame')"
+      class="btn"
+      >НАЧАТЬ ИГРУ</BaseButton
+    >
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -39,18 +42,21 @@ const emits = defineEmits<{
   pointer-events: none;
 }
 
-.start-btn {
-  font-size: 3.3vw;
+.btn-wrapper {
   position: absolute;
   bottom: 5%;
   opacity: 0;
   pointer-events: none;
   transform: translateY(5%);
   &.show {
-    transition: all 0.5s ease 3s;
+    transition: all 0.5s ease 2s;
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
   }
+}
+
+.btn {
+  font-size: 3.3vw;
 }
 </style>
