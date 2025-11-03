@@ -7,6 +7,7 @@ import slide6Bg from '@/slides/6/img/bg.webp'
 import slide7Bg from '@/slides/7/img/bg.webp'
 import gameBg from '@/slides/7-game/img/bg.webp'
 import slide8Bg from '@/slides/8/img/bg.webp'
+import slide9Bg from '@/slides/9/img/bg.webp'
 import slide10Bg from '@/slides/10/img/bg.webp'
 import slide11Bg from '@/slides/11/img/bg.webp'
 import slide12Bg from '@/slides/12/img/bg.webp'
@@ -22,7 +23,8 @@ const bgImages: { slide: string; src: string }[] = [
   { slide: '7', src: slide7Bg },
   { slide: '7-game', src: gameBg },
   { slide: '8', src: slide8Bg },
-  { slide: '9', src: gameBg },
+  { slide: '9', src: slide9Bg },
+  { slide: '9-game', src: gameBg },
   { slide: '10', src: slide10Bg },
   { slide: '11', src: slide11Bg },
   { slide: '12', src: slide12Bg },
@@ -30,7 +32,7 @@ const bgImages: { slide: string; src: string }[] = [
 
 const route = useRoute()
 
-const slidesWithoutScoreAndInfo = ['7-game', '9', '11']
+const slidesWithoutScoreAndInfo = ['7-game', '9-game', '11']
 
 const zIndex = computed(() => {
   if (!route.name) return undefined

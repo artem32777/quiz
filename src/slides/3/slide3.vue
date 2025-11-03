@@ -29,7 +29,7 @@ const options: QuizOption[] = [
   {
     id: 'начать прием метформина <br> + ЗОЖ',
     score: 10,
-    nextSlide: 7,
+    nextSlide: 6,
   },
   {
     id: 'начать прием сульфо-нилмочевины + ЗОЖ',
