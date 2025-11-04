@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import Card from '@/components/Card.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import areaHeart from './img/heart.webp'
@@ -121,6 +121,8 @@ async function checkResults() {
   state.results = true
 }
 
+const isGameLoss = computed(() => cards.value.find((el) => el.error))
+
 function showPrompt(cardPrompt: string) {
   if (!state.results) return
   prompt.value = cardPrompt
@@ -205,7 +207,7 @@ onMounted(() => {
     <BaseButton
       v-if="state.results"
       class="check-result"
-      @click="progress.changeProgress(0, 11)"
+      @click="progress.changeProgress(isGameLoss ? 0 : 10, 11)"
     >
       Далее
     </BaseButton>
@@ -217,7 +219,7 @@ onMounted(() => {
       @click="state.gameEndText = false"
     >
       <div>
-        <div v-if="cards.find((el) => el.error)">У Вас есть ошибки!</div>
+        <div v-if="isGameLoss">У Вас есть ошибки!</div>
         <div v-else>Поздравляем! Вы победили.</div>
         Для просмотра подсказок нажмите на карточки
       </div>

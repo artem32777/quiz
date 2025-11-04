@@ -17,11 +17,11 @@ const { nextStep } = useSlideSteps(state)
 
 const gameRank = () => {
   const { score } = progress
-  return score >= 90
+  return score >= 35
     ? 'Хранитель β-клеток'
-    : score >= 70
+    : score >= 25
       ? 'Страж инкретинов'
-      : score >= 50
+      : score >= 15
         ? 'Защитник метаболизма'
         : 'Исследователь в поисках'
 }
