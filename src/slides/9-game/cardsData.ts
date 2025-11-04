@@ -1,4 +1,4 @@
-import type { AreaId } from '@/slides/9-game/slide9.vue'
+import type { AreaId } from '@/slides/9-game/slide9-game.vue'
 
 export type Slide9Card = {
   area: AreaId
