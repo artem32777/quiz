@@ -97,4 +97,8 @@ const wrapperBgImage = computed(() => {
   .wrapper-prompt & {
   }
 }
+
+.small {
+  text-transform: lowercase;
+}
 </style>

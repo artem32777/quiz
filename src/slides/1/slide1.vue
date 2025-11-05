@@ -26,21 +26,29 @@ onMounted(async () => {
   <TextWrapper
     :show="state.legend"
     @click="nextStep"
-    height="30"
+    height="35"
     type="legend"
   >
-    Остров = островки лангерганса <br />
-    тучи = инсулиноррезистентность <br />
-    светящиеся точки = живая масса β-клеток <br />
+    <div>
+      Остров = островки лангерганса <br />
+      тучи = инсулиноррезистентность <br />
+      светящиеся точки = живая масса <br />
+      <div class="small">β</div>
+      - клеток
+    </div>
   </TextWrapper>
   <TextWrapper
     :show="state.text"
     @click="nextStep"
     height="60"
   >
-    Ваша миссия началась: <br />
-    тучи инсулинорезистентности сгущаются над островом Панкреона, и β-клеткам грозит апоптоз. Вам
-    нужно восстановить баланс инкретинов и спасти секреторную функцию
+    <div>
+      Ваша миссия началась: <br />
+      тучи инсулинорезистентности сгущаются над островом Панкреона, и
+      <div class="small">β</div>
+      - клеткам грозит апоптоз. Вам нужно восстановить баланс инкретинов и спасти секреторную
+      функцию
+    </div>
   </TextWrapper>
   <BaseButton
     :show="state.btn"
@@ -54,13 +62,5 @@ onMounted(async () => {
 <style scoped lang="scss">
 .btn-confirm {
   width: 40%;
-}
-
-.test {
-  font-size: 50px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: #fff;
 }
 </style>

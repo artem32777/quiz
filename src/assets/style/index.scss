@@ -7,6 +7,11 @@ html {
   user-select: none;
 }
 
+.small {
+  text-transform: lowercase;
+  display: inline;
+}
+
 .scale-enter-active, .scale-leave-active {
   transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '@/assets/style/index.scss'
 import BackgroundImages from '@/components/layout/default/BackgroundImages.vue'
-import Info from '@/components/layout/default/Info.vue'
+import Info from '@/components/layout/default/info/Info.vue'
 import Score from '@/components/layout/default/Score.vue'
 import TextWrapper from '@/components/TextWrapper/TextWrapper.vue'
 </script>

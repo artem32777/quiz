@@ -240,7 +240,7 @@ onMounted(() => {
         class="prompt"
       >
         <div class="prompt-inner">
-          {{ prompt }}
+          <span v-html="prompt" />
         </div>
       </TextWrapper>
     </Transition>
