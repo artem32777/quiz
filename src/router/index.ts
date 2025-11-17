@@ -15,7 +15,7 @@ import slide11 from '@/slides/11/slide11.vue'
 import slide12 from '@/slides/12/slide12.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createMemoryHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', name: '1', component: slide1 },
     { path: '/2', name: '2', component: slide2 },
